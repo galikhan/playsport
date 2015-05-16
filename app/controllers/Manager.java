@@ -5,5 +5,8 @@ package controllers;
  * Date: 16.05.2015
  * Time: 21:01
  */
-public class Manager {
+public class Manager extends Application {
+    public static void index(){
+        render();
+    }
 }
