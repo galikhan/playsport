@@ -2,9 +2,7 @@ package models;
 
 import play.db.jpa.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author: Galikhan Khamitov <galikhin.khamitov@metaphor.kz>
@@ -12,9 +10,16 @@ import javax.persistence.Table;
  * Time: 20:41
  */
 @Entity
-@Table(name="images")
-public class Image extends Model {
+@Table(name="ps_images")
+public class Image extends PersistentObject {
 
-    public String name;
+    @ManyToOne
+    @JoinColumn(name="field_")
     public Field field;
+
+    @Column(name="name_")
+    public String name;
+
+    @Column(name="title_")
+    public String title;
 }

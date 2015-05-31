@@ -13,8 +13,8 @@ import java.io.Serializable;
  * Time: 19:50
  */
 @Entity
-@Table(name="users")
-public class User extends Model implements Serializable{
+@Table(name="ps_users")
+public class User extends PersistentObject implements Serializable{
 
     public enum Role {
         user, moderator, admin

@@ -12,7 +12,7 @@
     <meta name="keywords" content="#{get 'keywords'}#{/get}" />
     <meta name="application-name" content="#{get 'application-name'}#{/get}" />
     <!-- Import google fonts - Heading first/ text second -->
-    <link href='http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,700' rel='stylesheet' type='text/css'>
+    <!--<link href='http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,700' rel='stylesheet' type='text/css'>-->
     <!-- Css files -->
     <!-- Icons -->
     <link href="@{'public/admin/css/icons.css'}" rel="stylesheet" />
@@ -30,8 +30,13 @@
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="@{'public/admin/img/ico/apple-touch-icon-72-precomposed.png'}">
     <link rel="apple-touch-icon-precomposed" href="@{'public/admin/img/ico/apple-touch-icon-57-precomposed.png'}">
     <link rel="icon" href="@{'public/admin/img/ico/favicon.ico'}" type="image/png">
+
+    #{get "moreStyles" /}
+
     <!-- Windows8 touch icon ( http://www.buildmypinnedsite.com/ )-->
-    <meta name="msapplication-TileColor" content="#3399cc" /></head>
+    <meta name="msapplication-TileColor" content="#3399cc" />
+    <script src="http://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+</head>
 <body>
 
 <!-- .page-navbar -->
@@ -60,12 +65,13 @@
 <!-- End #wrapper -->
 
 <!-- Start #footer -->
-<div id="footer">
+<!--<div id="footer">-->
     #{include 'Manager/include/footer.html' /}
-</div>
+<!--</div>-->
 <!-- End #footer -->
-
-
+<!--Modals-->
+#{include 'Manager/modal/yandex-map.html' /}
+<!--Modals-->
 <!-- Back to top -->
 <div id="back-to-top"><a href="#">Back to Top</a>
 </div>
@@ -85,45 +91,8 @@
 <![endif]-->
 
 <!-- Bootstrap plugins -->
-<!-- Bootstrap plugins -->
-<script src="@{'public/admin/js/bootstrap/bootstrap.js'}"></script>
-<!-- Core plugins ( not remove ) -->
-<script src="@{'public/admin/js/libs/modernizr.custom.js'}"></script>
-<!-- Handle responsive view functions -->
-<script src="@{'public/admin/js/jRespond.min.js'}"></script>
-<!-- Custom scroll for sidebars,tables and etc. -->
-<script src="@{'public/admin/plugins/core/slimscroll/jquery.slimscroll.min.js'}"></script>
-<script src="@{'public/admin/plugins/core/slimscroll/jquery.slimscroll.horizontal.min.js'}"></script>
-<!-- Remove click delay in touch -->
-<script src="@{'public/admin/plugins/core/fastclick/fastclick.js'}"></script>
-<!-- Increase jquery animation speed -->
-<script src="@{'public/admin/plugins/core/velocity/jquery.velocity.min.js'}"></script>
-<!-- Quick search plugin (fast search for many widgets) -->
-<script src="@{'public/admin/plugins/core/quicksearch/jquery.quicksearch.js'}"></script>
-<!-- Bootbox fast bootstrap modals -->
-<script src="@{'public/admin/plugins/ui/bootbox/bootbox.js'}"></script>
-<!-- Other plugins ( load only nessesary plugins for every page) -->
-<script src="@{'public/admin/js/libs/date.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.custom.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.pie.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.resize.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.time.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.growraf.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.categories.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.stack.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.orderBars.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.tooltip.min.js'}"></script>
-<script src="@{'public/admin/plugins/charts/flot/jquery.flot.curvedLines.js'}"></script>
-<script src="@{'public/admin/plugins/charts/sparklines/jquery.sparkline.js'}"></script>
-<script src="@{'public/admin/plugins/charts/progressbars/progressbar.js'}"></script>
-<script src="@{'public/admin/plugins/ui/waypoint/waypoints.js'}"></script>
-<script src="@{'public/admin/plugins/ui/weather/skyicons.js'}"></script>
-<script src="@{'public/admin/plugins/ui/notify/jquery.gritter.js'}"></script>
-<script src="@{'public/admin/plugins/misc/vectormaps/jquery-jvectormap-1.2.2.min.js'}"></script>
-<script src="@{'public/admin/plugins/misc/vectormaps/maps/jquery-jvectormap-world-mill-en.js'}"></script>
-<script src="@{'public/admin/plugins/misc/countTo/jquery.countTo.js'}"></script>
-<script src="@{'public/admin/js/main.js'}"></script>
-<script src="@{'public/admin/js/pages/dashboard.js'}"></script>
+#{include 'Manager/include/form-advanced-js.html' /}
 
+#{get "moreScripts" /}
 </body>
 </html>

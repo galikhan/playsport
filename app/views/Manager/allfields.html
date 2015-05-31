@@ -1,0 +1,55 @@
+#{extends "admin-main.html" /}
+
+#{set 'moreScripts'}
+<script  type="text/javascript">
+    ymaps.ready(init);
+    var myMap;
+    var initCoords;
+    function init(){
+        myMap = new ymaps.Map("map", {
+            center: [55.76, 37.64],
+            zoom: 10
+        });
+    }
+
+    function setPlacemark(strCoords){
+        var parse = strCoords.split(",")
+        var coords = [];
+        coords.push(parse[0]);
+        coords.push(parse[1]);
+        myMap.geoObjects.add(new ymaps.Placemark(coords, {}, {}));
+        console.log(coords);
+        myMap.setCenter(coords);
+    }
+</script>
+#{/set}
+<div class="page-content-wrapper">
+    <div class="page-content-inner">
+        <div id="page-header" class="clearfix">
+            <div class="page-header">
+                <h2>Добавить новое поле</h2>
+                <!--<span class="txt">Welcome to Dynamic admin</span>-->
+            </div>
+            <div class="header-stats">
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default toggle panelMove panelClose panelRefresh" id="dyn_1">
+        <!-- Start .panel -->
+        <div class="panel-heading">
+            <h4 class="panel-title">Введите данные поля</h4>
+            <div class="panel-controls panel-controls-right">
+                <a href="#" class="panel-refresh"><i class="fa fa-circle-o"></i></a>
+                <a href="#" class="toggle panel-minimize"><i class="fa fa-angle-up"></i>
+                </a><a href="#" class="panel-close"><i class="fa fa-times"></i></a>
+            </div>
+        </div>
+        <div class="panel-body pt0 pb0">
+            #{list items:fields, as:'field'}
+                <h4>${field.name}</h4>
+                <input onclick="setPlacemark('${field.map}')" type="button" class="btn btn-default" data-toggle="modal" data-target="#mySmallModal" value="Указать на карте" />
+                <input type="hidden" value="${field.map}" id="map-coordinat" />
+            #{/list}
+        </div>
+    </div>
+</div>

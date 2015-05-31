@@ -2,29 +2,29 @@
 $(document).ready(function() {
 
 	//------------- Sparklines in header stats -------------//
-    $('#spark-visitors').sparkline([5,8,10,8,7,12,11,6,13,8,5,8,10,11,7,12,11,6,13,8], {
-        type: 'bar',
-        width: '100%',
-        height: '20px',
-        barColor: '#dfe2e7',
-        zeroAxis: false,
-    });
-
-    $('#spark-templateviews').sparkline([12,11,6,13,8,5,8,10,12,11,6,13,8,5,8,10,12,11,6,13,8,5,8], {
-        type: 'bar',
-        width: '100%',
-        height: '20px',
-        barColor: '#dfe2e7',
-        zeroAxis: false,
-    });
-
-    $('#spark-sales').sparkline([19,18,20,17,20,18,22,24,23,19,18,20,17,20,18,22,24,23,19,18,20,17], {
-        type: 'bar',
-        width: '100%',
-        height: '20px',
-        barColor: '#dfe2e7',
-        zeroAxis: false,
-    });
+//    $('#spark-visitors').sparkline([5,8,10,8,7,12,11,6,13,8,5,8,10,11,7,12,11,6,13,8], {
+//        type: 'bar',
+//        width: '100%',
+//        height: '20px',
+//        barColor: '#dfe2e7',
+//        zeroAxis: false,
+//    });
+//
+//    $('#spark-templateviews').sparkline([12,11,6,13,8,5,8,10,12,11,6,13,8,5,8,10,12,11,6,13,8,5,8], {
+//        type: 'bar',
+//        width: '100%',
+//        height: '20px',
+//        barColor: '#dfe2e7',
+//        zeroAxis: false,
+//    });
+//
+//    $('#spark-sales').sparkline([19,18,20,17,20,18,22,24,23,19,18,20,17,20,18,22,24,23,19,18,20,17], {
+//        type: 'bar',
+//        width: '100%',
+//        height: '20px',
+//        barColor: '#dfe2e7',
+//        zeroAxis: false,
+//    });
 
     //------------- Fancy select -------------//
     $('.fancy-select').fancySelect();
@@ -36,34 +36,34 @@ $(document).ready(function() {
     });
 
 	//------------- Select 2 -------------//
-	$('.select2').select2({placeholder: 'Select state'});
+//	$('.select2').select2({placeholder: 'Select state'});
 
 	//minumum 2 symbols input
-	$('.select2-minimum').select2({
-		placeholder: 'Select state',
-		minimumInputLength: 2,
-	});
+//	$('.select2-minimum').select2({
+//		placeholder: 'Select state',
+//		minimumInputLength: 2,
+//	});
 
 	//------------- Masked input fields -------------//
-	$("#mask-phone").mask("(999) 999-9999", {completed:function(){alert("Callback action after complete");}});
-	$("#mask-phoneExt").mask("(999) 999-9999? x99999");
-	$("#mask-phoneInt").mask("+40 999 999 999");
-	$("#mask-date").mask("99/99/9999");
-	$("#mask-ssn").mask("999-99-9999");
-	$("#mask-productKey").mask("a*-999-a999", { placeholder: "*" });
-	$("#mask-eyeScript").mask("~9.99 ~9.99 999");
-	$("#mask-percent").mask("99%");
+//	$("#mask-phone").mask("(999) 999-9999", {completed:function(){alert("Callback action after complete");}});
+//	$("#mask-phoneExt").mask("(999) 999-9999? x99999");
+//	$("#mask-phoneInt").mask("+40 999 999 999");
+//	$("#mask-date").mask("99/99/9999");
+//	$("#mask-ssn").mask("999-99-9999");
+//	$("#mask-productKey").mask("a*-999-a999", { placeholder: "*" });
+//	$("#mask-eyeScript").mask("~9.99 ~9.99 999");
+//	$("#mask-percent").mask("99%");
 
 	//------------- Dual list box -------------//
-	$('.duallistbox').bootstrapDualListbox({
-	    nonSelectedListLabel: 'Non-selected',
-  		selectedListLabel: 'Selected',
-	    preserveSelectionOnMove: 'moved',
-	    moveOnSelect: false,
-	});
+//	$('.duallistbox').bootstrapDualListbox({
+//	    nonSelectedListLabel: 'Non-selected',
+//  		selectedListLabel: 'Selected',
+//	    preserveSelectionOnMove: 'moved',
+//	    moveOnSelect: false,
+//	});
 
 	//------------- Spinners -------------//
-	$("#basic-spinner").TouchSpin({
+	$(".basic-spinner").TouchSpin({
         min: 0,
         max: 100
     });

@@ -29,6 +29,27 @@ window.addEventListener('load', function() {
 //doc ready function
 $(document).ready(function() {
 
+    //------------- Fancy select -------------//
+    $('.fancy-select').fancySelect();
+    console.log('hello world of fancy');
+    //custom templating
+//    $('.fancy-select1').fancySelect({
+//        optionTemplate: function(optionEl) {
+//            return optionEl.text() + '<i class="pull-left ' + optionEl.data('icon') + '"></i>';
+//        }
+//    });
+
+	//------------- Select 2 -------------//
+//	$('.select2').select2({placeholder: 'Select state'});
+
+//	//minumum 2 symbols input
+//	$('.select2-minimum').select2({
+//		placeholder: 'Select state',
+//		minimumInputLength: 2,
+//	});
+
+
+
     //Disable certain links
     $('a[href^=#]').click(function (e) {
         e.preventDefault()

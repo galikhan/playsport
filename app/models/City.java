@@ -8,21 +8,18 @@ import javax.persistence.Table;
 
 /**
  * @author: Galikhan Khamitov <galikhin.khamitov@metaphor.kz>
- * Date: 16.05.2015
- * Time: 20:39
+ * Date: 20.05.2015
+ * Time: 22:16
  */
 
 @Entity
-@Table(name="sizes")
-public class Size extends Model {
+@Table(name="ps_cities")
+public class City extends PersistentObject {
 
     @Column(name="name_")
     public String name;
 
-    @Column(name="length_")
-    public int length;
-
-    @Column(name="width_")
-    public int width;
+    @Column(name="code_")
+    public String code;
 
 }

@@ -1,0 +1,220 @@
+#{extends "admin-main.html" /}
+
+#{set "moreScripts"}
+<script type="text/javascript">
+    ymaps.ready(init);
+    var myMap;
+    var initCoords;
+    function init(){
+        myMap = new ymaps.Map("map", {
+            center: [55.76, 37.64],
+            zoom: 12
+        });
+
+        //var placemark = new ymaps.Placemark(myMap.getCenter(),{},{preset:"islands#redDotIcon"});
+        //myMap.geoObjects.add(placemark);
+
+        var placemarkSet = false;
+        myMap.events.add('click', function(e){
+            if(!placemarkSet){
+                var clickedCoords = e.get("coords");
+                document.getElementById("map-coordinates").value = clickedCoords[0]+","+clickedCoords[1];
+
+                var placemark = new ymaps.Placemark(
+                    clickedCoords,{},
+                    {
+                        preset:"islands#redDotIcon",
+                        draggable:true,
+                    }
+                );
+                placemark.events.add('dragend', function(event)
+                {
+                        var markerPosition = event.get("position");
+                        // Переводим координаты страницы в глобальные пиксельные координаты.
+                        var markerGlobalPosition = myMap.converter.pageToGlobal(markerPosition),
+                            // Получаем центр карты в глобальных пиксельных координатах.
+                            mapGlobalPixelCenter = myMap.getGlobalPixelCenter(),
+                            // Получением размер контейнера карты на странице.
+                            mapContainerSize = myMap.container.getSize(),
+                            mapContainerHalfSize = [mapContainerSize[0] / 2, mapContainerSize[1] / 2],
+                            // Вычисляем границы карты в глобальных пиксельных координатах.
+                            mapGlobalPixelBounds = [
+                                [mapGlobalPixelCenter[0] - mapContainerHalfSize[0], mapGlobalPixelCenter[1] - mapContainerHalfSize[1]],
+                                [mapGlobalPixelCenter[0] + mapContainerHalfSize[0], mapGlobalPixelCenter[1] + mapContainerHalfSize[1]]
+                            ];
+
+                            var geoPosition = myMap.options.get('projection').fromGlobalPixels(markerGlobalPosition, myMap.getZoom());
+                            console.log('geopost', geoPosition);
+                            document.getElementById("map-coordinates").value = geoPosition[0]+","+geoPosition[1];
+
+
+                        // Проверяем, что завершение работы драггера произошло в видимой области карты.
+//                        if (containsPoint(mapGlobalPixelBounds, markerGlobalPosition)) {
+                            // Теперь переводим глобальные пиксельные координаты в геокоординаты с учетом текущего уровня масштабирования карты.
+//                            var geoPosition = myMap.options.get('projection').fromGlobalPixels(markerGlobalPosition, myMap.getZoom());
+//                            console.log('geopost', geoPosition);
+//                        }
+                        //console.log('global', markerGlobalPosition)
+                });
+
+                myMap.geoObjects.add(placemark);
+                placemarkSet = true;
+            }
+        });
+        console.log(myMap.geoObjects);
+
+        showCityList();
+
+        function drag(){
+            console.log('drag');
+        }
+
+        function beforedrag(){
+            console.log('before');
+        }
+    }
+    function showCityList(){
+        console.log("shoooow");
+        $("#field-city-id").show();
+    }
+
+    function setCenter(){
+        var city = document.getElementById("field-city-id").value;
+        var code = document.getElementById("city-code-"+city).value;
+        var array = code.split(",");
+        var coord = [];
+        coord.push(array[0]);
+        coord.push(array[1]);
+        console.log(coord);
+        myMap.setCenter(coord);
+    }
+
+</script>#{/set}
+<div class="page-content-wrapper">
+    <div class="page-content-inner">
+        <div id="page-header" class="clearfix">
+            <div class="page-header">
+                <h2>Добавить новое поле</h2>
+                <!--<span class="txt">Welcome to Dynamic admin</span>-->
+            </div>
+            <div class="header-stats">
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default toggle panelMove panelClose panelRefresh" id="dyn_1">
+        <!-- Start .panel -->
+        <div class="panel-heading">
+            <h4 class="panel-title">Введите данные поля</h4>
+            <div class="panel-controls panel-controls-right">
+                <a href="#" class="panel-refresh"><i class="fa fa-circle-o"></i></a>
+                <a href="#" class="toggle panel-minimize"><i class="fa fa-angle-up"></i>
+                </a><a href="#" class="panel-close"><i class="fa fa-times"></i></a>
+            </div>
+        </div>
+        <div class="panel-body pt0 pb0">
+            <form class="form-horizontal group-border" method="post" action="@{Manager.save()}">
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Город</label>
+                    <div class="col-lg-4 col-md-3">
+                        #{list items:cities, as:'city'}
+                            <input id="city-code-${city.id}" type="hidden" value="${city.code}" />
+                        #{/list}
+                        <i class="fa fa-refresh fa-spin"></i>
+                        <select name="field.city.id" class="form-control" id="field-city-id" onchange="setCenter()" style="display:none">
+                            <option value="">Выбрать</option>
+                            #{list items:cities, as:'city'}
+                                <option value="${city.id}">${city.name}</option>
+                            #{/list}
+                        </select>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Адрес</label>
+                    <input name="field.map" type="text" id="map-coordinates" />
+                    <div class="col-lg-4 col-md-3">
+                        <input class="form-control" name="field.address" type="text" placeholder="ул. Панфилова 2"/>
+                    </div>
+                    <div class="col-lg-2 col-md-2">
+                        <input type="button" class="btn btn-default" data-toggle="modal" data-target="#mySmallModal" value="Указать на карте" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Контактные номера</label>
+                    <div class="col-lg-4 col-md-3">
+                        <input class="form-control" name="field.phones" type="text" placeholder="+7(701)99-999-99" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Название</label>
+                    <div class="col-lg-4 col-md-3">
+                        <input class="form-control" name="field.name" type="text" placeholder="" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Тип</label>
+                    <div class="col-lg-4 col-md-3">
+                        #{select 'field.type.id', items:fieldTypes, valueProperty:'id', labelProperty:'name', class:'form-control' /}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Покрытие</label>
+                    <div class="col-lg-4 col-md-3">
+                        #{select 'field.covering.id', items:coverings, valueProperty:'id', labelProperty:'name', class:'form-control' /}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label"><!--Размеры--></label>
+                    <div class="col-lg-4 col-md-3">
+                        <div class="form-group">
+                            <label class="col-lg-2 col-md-3 control-label" for="">Длина</label>
+                            <div class="col-lg-10 col-md-9">
+                                <input name="field.length" id="basic-spinner" class="basic-spinner form-control" type="text" value="55">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-3">
+                        <div class="form-group">
+                            <label class="col-lg-2 col-md-3 control-label" for="">Ширина</label>
+                            <div class="col-lg-10 col-md-9">
+                                <input name="field.width" id="" class="basic-spinner form-control" type="text" value="55">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Дополнительная информация</label>
+                    <div class="col-lg-4 col-md-3">
+                        <textarea name="field.info" type="text" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Дополнительные условия</label>
+                    <div class="col-lg-4 col-md-3">
+                        #{list items:comforts, as:'comfort'}
+                        <div class="checkbox-custom">
+                            <input type="checkbox" value="${comfort.id}" id="comfort${comfort.id}">
+                            <label for="comfort${comfort.id}">${comfort.name}</label>
+                        </div>
+                        #{/list}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label">Дополнительная информация</label>
+                    <div class="col-lg-4 col-md-3">
+                        <textarea type="text" class="form-control" name="field.info"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-lg-2 col-md-3 control-label"></label>
+                    <div class="col-lg-4 col-md-3">
+                        <input type="submit" value="сохранить" class="btn btn-default"/>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
