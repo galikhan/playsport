@@ -7,7 +7,8 @@
     var initCoords;
     function init(){
         myMap = new ymaps.Map("map", {
-            center: [55.76, 37.64],
+            //Astana coords
+            center: [51.1284,71.4306],
             zoom: 12
         });
 
@@ -112,6 +113,14 @@
             </div>
         </div>
         <div class="panel-body pt0 pb0">
+
+            <form action="@{Manager.uploadImage()}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="fieldId" value="1" />
+                <input type="text" name="title" />
+                <input type="file" name="file" />
+                <input type="submit" value="submit" />
+            </form>
+
             <form class="form-horizontal group-border" method="post" action="@{Manager.save()}">
                 <div class="form-group">
                     <label class="col-lg-2 col-md-3 control-label">Город</label>
@@ -193,7 +202,7 @@
                     <div class="col-lg-4 col-md-3">
                         #{list items:comforts, as:'comfort'}
                         <div class="checkbox-custom">
-                            <input type="checkbox" value="${comfort.id}" id="comfort${comfort.id}">
+                            <input name="fieldComfort" type="checkbox" value="${comfort.id}" id="comfort${comfort.id}">
                             <label for="comfort${comfort.id}">${comfort.name}</label>
                         </div>
                         #{/list}
@@ -215,6 +224,7 @@
                 </div>
 
             </form>
+
         </div>
     </div>
 </div>

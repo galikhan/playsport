@@ -4,6 +4,9 @@ import play.db.jpa.GenericModel;
 import play.db.jpa.Model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author: Galikhan Khamitov <galikhin.khamitov@metaphor.kz>
  * Date: 16.05.2015
@@ -51,4 +54,16 @@ public class Field extends PersistentObject {
 
     @Column(name="map_")
     public String map;
+
+    @ManyToMany
+    @JoinTable(name="m2m_field_fcomforts", joinColumns = {@JoinColumn(name="field_")}, inverseJoinColumns = {@JoinColumn(name="comfort_")})
+    public Set<FieldComfort> fieldComfortSet = new HashSet<FieldComfort>();
+
+    public Set<FieldComfort> getFieldComfortSet() {
+        return fieldComfortSet;
+    }
+
+    public void setFieldComfortSet(FieldComfort fieldComfort) {
+        fieldComfortSet.add(fieldComfort);
+    }
 }

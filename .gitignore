@@ -1,6 +1,7 @@
 #added by gali
 server.pid
 /logs
+/public/uploads/*
 
 # Created by https://www.gitignore.io
 

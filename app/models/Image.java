@@ -22,4 +22,16 @@ public class Image extends PersistentObject {
 
     @Column(name="title_")
     public String title;
+
+    @Column(name="resource_id_")
+    public String resourceId;
+
+    @Column(name="content_type_")
+    public String contentType;
+
+    @Column(name="url_")
+    public String url;
+
+    @Column(name="size_")
+    public int size;
 }

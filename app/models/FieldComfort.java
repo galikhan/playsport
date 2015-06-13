@@ -2,7 +2,9 @@ package models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.Set;
 
 /**
  * @author: Galikhan Khamitov <galikhin.khamitov@metaphor.kz>
@@ -19,4 +21,6 @@ public class FieldComfort extends PersistentObject{
     @Column(name="info_")
     public String info;
 
+    @ManyToMany(mappedBy = "fieldComfortSet")
+    public Set<Field> fieldSet;
 }
