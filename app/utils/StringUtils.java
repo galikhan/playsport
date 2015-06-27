@@ -5,7 +5,7 @@ package utils;
  * Date: 13.06.2015
  * Time: 21:21
  */
-public class Common {
+public class StringUtils {
 
     public static boolean isEmpty(String filename){
         if(filename == null || filename.isEmpty() || filename.trim().equals(""))

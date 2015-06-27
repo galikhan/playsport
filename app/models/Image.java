@@ -13,6 +13,10 @@ import javax.persistence.*;
 @Table(name="ps_images")
 public class Image extends PersistentObject {
 
+    public enum ImageType{
+        THUMBNAIL, OPTIMAL, ORIGINAL
+    }
+
     @ManyToOne
     @JoinColumn(name="field_")
     public Field field;
@@ -34,4 +38,10 @@ public class Image extends PersistentObject {
 
     @Column(name="size_")
     public int size;
+
+    @Column(name="image_type_")
+    @Enumerated(EnumType.STRING)
+    public ImageType imageType;
+
+
 }

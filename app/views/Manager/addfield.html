@@ -2,95 +2,84 @@
 
 #{set "moreScripts"}
 <script type="text/javascript">
-    ymaps.ready(init);
-    var myMap;
-    var initCoords;
-    function init(){
-        myMap = new ymaps.Map("map", {
-            //Astana coords
-            center: [51.1284,71.4306],
-            zoom: 12
-        });
+    var removeUrl = "@{Manager.deleteImage()}";
 
-        //var placemark = new ymaps.Placemark(myMap.getCenter(),{},{preset:"islands#redDotIcon"});
-        //myMap.geoObjects.add(placemark);
-
-        var placemarkSet = false;
-        myMap.events.add('click', function(e){
-            if(!placemarkSet){
-                var clickedCoords = e.get("coords");
-                document.getElementById("map-coordinates").value = clickedCoords[0]+","+clickedCoords[1];
-
-                var placemark = new ymaps.Placemark(
-                    clickedCoords,{},
-                    {
-                        preset:"islands#redDotIcon",
-                        draggable:true,
-                    }
-                );
-                placemark.events.add('dragend', function(event)
-                {
-                        var markerPosition = event.get("position");
-                        // Переводим координаты страницы в глобальные пиксельные координаты.
-                        var markerGlobalPosition = myMap.converter.pageToGlobal(markerPosition),
-                            // Получаем центр карты в глобальных пиксельных координатах.
-                            mapGlobalPixelCenter = myMap.getGlobalPixelCenter(),
-                            // Получением размер контейнера карты на странице.
-                            mapContainerSize = myMap.container.getSize(),
-                            mapContainerHalfSize = [mapContainerSize[0] / 2, mapContainerSize[1] / 2],
-                            // Вычисляем границы карты в глобальных пиксельных координатах.
-                            mapGlobalPixelBounds = [
-                                [mapGlobalPixelCenter[0] - mapContainerHalfSize[0], mapGlobalPixelCenter[1] - mapContainerHalfSize[1]],
-                                [mapGlobalPixelCenter[0] + mapContainerHalfSize[0], mapGlobalPixelCenter[1] + mapContainerHalfSize[1]]
-                            ];
-
-                            var geoPosition = myMap.options.get('projection').fromGlobalPixels(markerGlobalPosition, myMap.getZoom());
-                            console.log('geopost', geoPosition);
-                            document.getElementById("map-coordinates").value = geoPosition[0]+","+geoPosition[1];
-
-
-                        // Проверяем, что завершение работы драггера произошло в видимой области карты.
-//                        if (containsPoint(mapGlobalPixelBounds, markerGlobalPosition)) {
-                            // Теперь переводим глобальные пиксельные координаты в геокоординаты с учетом текущего уровня масштабирования карты.
-//                            var geoPosition = myMap.options.get('projection').fromGlobalPixels(markerGlobalPosition, myMap.getZoom());
-//                            console.log('geopost', geoPosition);
-//                        }
-                        //console.log('global', markerGlobalPosition)
-                });
-
-                myMap.geoObjects.add(placemark);
-                placemarkSet = true;
+	//delete image
+	$('.delete-image').click(function(e) {
+	    var imageIdStr = e.target.id;
+	    var imageId = imageIdStr.split("-")[1];
+		var panel = $(this).closest('.panel');
+        bootbox.confirm({
+            message: "Удалить картинку",
+            title: "Действительно хотите удалить?",
+            className: "modal-style2",
+            callback: function(result) {
+                if (result) {
+                    deleteImage(imageId);
+                    panel.remove();
+                }
             }
         });
-        console.log(myMap.geoObjects);
+        //center modal via method
+        $('body').data('dynamic').centerModal();
+    });
 
-        showCityList();
-
-        function drag(){
-            console.log('drag');
-        }
-
-        function beforedrag(){
-            console.log('before');
-        }
-    }
-    function showCityList(){
-        console.log("shoooow");
-        $("#field-city-id").show();
+    function deleteImage(imageId){
+        $.post(removeUrl, {"imageId":imageId}, function(data){
+        }, "json");
     }
 
-    function setCenter(){
-        var city = document.getElementById("field-city-id").value;
-        var code = document.getElementById("city-code-"+city).value;
-        var array = code.split(",");
-        var coord = [];
-        coord.push(array[0]);
-        coord.push(array[1]);
-        console.log(coord);
-        myMap.setCenter(coord);
-    }
+    //Dropzone actions
+    var imageIdArray = [];
 
-</script>#{/set}
+    var myDropzone = new Dropzone("#my-awesome-dropzone",
+        {
+            url: "@{Manager.uploadImage()}",
+            paramName : "file",
+            acceptedFiles : "image/*",
+            addRemoveLinks : true,
+            clickable: true,
+            dictRemoveFile : "Удалить",
+            headers:{"fieldId":1},
+            init:function(){
+
+             this.on("sending", function(file, xhr, data) {
+                        data.append("fieldId", 1);
+             });
+             this.on("removedfile", function(file, xhr, data){
+
+                var imageId = file["my-id"];
+                jQuery.post(removeUrl, {"imageId":imageId}, function(data){
+                }, "json");
+
+             });
+
+             this.on("success", function(file, data) {
+                   file["my-id"]=data.resultId;
+                   imageIdArray.push(data.resultId)
+              });
+
+            }
+        });
+
+    var schedule = 1;
+    $("#add-new-schedule").click(function(){
+        schedule +=1;
+        $("#global-"+schedule).show();
+        $("#schedule-length").attr("value", schedule);
+    });
+
+    $("#delete-new-schedule").click(function(){
+        schedule -=1;
+        $("#global-"+schedule).hide();
+        $("#schedule-length").attr("value", schedule);
+    });
+
+</script>
+#{/set}
+
+<div id="preview-template" style="display: none;"></div>
+
 <div class="page-content-wrapper">
     <div class="page-content-inner">
         <div id="page-header" class="clearfix">
@@ -114,12 +103,199 @@
         </div>
         <div class="panel-body pt0 pb0">
 
-            <form action="@{Manager.uploadImage()}" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="fieldId" value="1" />
-                <input type="text" name="title" />
-                <input type="file" name="file" />
-                <input type="submit" value="submit" />
+            <!--<div class="col-lg-10 col-md-9">-->
+                <!--<div class="input-daterange input-group">-->
+                    <!--<span class="input-group-addon"><i class="fa fa-calendar"></i></span>-->
+                    <!--<input type="text" class="form-control" name="start">-->
+                    <!--<span class="input-group-addon">to</span>-->
+                    <!--<input type="text" class="form-control" name="end">-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="row">
+                <div class="col-md-4"><h5>Дни недели</h5></div>
+                <div class="col-md-2"><h5>Начало работы</h5></div>
+                <div class="col-md-2"><h5>До</h5></div>
+                <div class="col-md-2"><h5>Сумма за час</h5></div>
+            </div>
+
+
+            <!-- Schedule -->
+            <form action="@{Manager.addSchedule()}" method="POST">
+            <input type="hidden" name="fieldId" value="1" />
+            <input type="hidden" id="schedule-length" name="schedule-length" value="1" />
+
+            #{list items:scheduleLength, as:'id'}
+
+                #{if id==0}
+                    #{set 'display'}normal#{/set}
+                #{/if}
+                #{else}
+                    #{set 'display'}none#{/set}
+                #{/else}
+
+                <div class="row">
+                    <div id="global-${id}" class="global" style="display:#{get 'display' /}">
+
+                    <div class="col-md-2">
+                        <select class="form-control"  name="begin-day-${id}">
+                            #{list items:weekdays, as:'weekday'}
+                            <option value="${weekday.id}">
+                                ${weekday.name}
+                            </option>
+                            #{/list}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control" name="end-day-${id}">
+                            #{list items:weekdays, as:'weekday'}
+                            <option value="${weekday.id}">
+                                ${weekday.name}
+                            </option>
+                            #{/list}
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="input-group bootstrap-timepicker">
+                                <div class="bootstrap-timepicker-widget dropdown-menu">
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><a href="#" data-action="incrementHour"><i class="fa fa-angle-up"></i></a></td>
+                                            <td class="separator">&nbsp;</td>
+                                            <td><a href="#" data-action="incrementMinute"><i class="fa fa-angle-up"></i></a></td>
+                                            <td class="separator">&nbsp;</td>
+                                            <td class="meridian-column"><a href="#" data-action="toggleMeridian"><i class="fa fa-angle-up"></i></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="text" name="begin-hour-${id}" class="bootstrap-timepicker-hour form-control" maxlength="2"></td>
+                                            <td class="separator">:</td>
+                                            <td><input type="text" name="begin-minute-${id}" class="bootstrap-timepicker-minute form-control" maxlength="2"></td>
+                                            <td class="separator">&nbsp;</td>
+                                            <td><input type="text" name="begin-meridian-${id}" class="bootstrap-timepicker-meridian form-control" maxlength="2">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" data-action="decrementHour"><i class="fa fa-angle-down"></i></a></td>
+                                            <td class="separator"></td>
+                                            <td><a href="#" data-action="decrementMinute"><i class="fa fa-angle-down"></i></a></td>
+                                            <td class="separator">&nbsp;</td>
+                                            <td><a href="#" data-action="toggleMeridian"><i class="fa fa-angle-down"></i></a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                <input type="text" class="form-control timepicker"  name="begin-time-${id}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <div class="input-group bootstrap-timepicker">
+                                <div class="bootstrap-timepicker-widget dropdown-menu">
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td><a href="#" data-action="incrementHour"><i class="fa fa-angle-up"></i></a></td>
+                                            <td class="separator">&nbsp;</td>
+                                            <td><a href="#" data-action="incrementMinute"><i class="fa fa-angle-up"></i></a></td>
+                                            <td class="separator">&nbsp;</td>
+                                            <td class="meridian-column"><a href="#" data-action="toggleMeridian"><i class="fa fa-angle-up"></i></a></td>
+                                        </tr><tr>
+                                            <td><input type="text" name="end-hour-${id}" class="bootstrap-timepicker-hour form-control" maxlength="2"></td>
+                                            <td class="separator">:</td>
+                                            <td><input type="text" name="end-minute-${id}" class="bootstrap-timepicker-minute form-control" maxlength="2"></td>
+                                            <td class="separator">&nbsp;</td>
+                                            <td><input type="text" name="end-meridian-${id}" class="bootstrap-timepicker-meridian form-control" maxlength="2">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><a href="#" data-action="decrementHour"><i class="fa fa-angle-down"></i></a></td>
+                                            <td class="separator"></td>
+                                            <td><a href="#" data-action="decrementMinute"><i class="fa fa-angle-down"></i></a></td>
+                                            <td class="separator">&nbsp;</td>
+                                            <td><a href="#" data-action="toggleMeridian"><i class="fa fa-angle-down"></i></a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+                                <input type="text" class="form-control timepicker" name="end-time-${id}" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-group input-icon">
+                            <input type="text" name="payment-${id}" class="form-control">
+                            <span class="input-group-addon">тг</span>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div>
+                </div>
+            #{/list}
+
+            <div class="row">
+                <div class="col-md-8">
+                </div>
+                <div class="col-md-4">
+                    <input type="button" class="btn btn-default" id="add-new-schedule" value="Добавить" />
+                    <input type="button" class="btn btn-default" id="delete-new-schedule" value="Удалить" />
+                    <button class="btn btn-default" type="submit">Сохранить</button>
+                </div>
+            </div>
+
             </form>
+
+            <!-- Schedule -->
+
+            <hr>
+
+            <div id="my-awesome-dropzone" class="dropzone">
+                <input type="hidden" name="fieldId" value="1" />
+            </div>
+
+            <div class="row gallery sortable-layout">
+                #{list items:images, as:'image'}
+                <div class="col-xs-12 col-md-3">
+                    <div class="panel panel-default plain panelMove">
+                        <!-- Start .panel -->
+                        <div class="panel-heading">
+                            <label class="panel-title">${image.name}
+                                <!--<small>other desciption</small>-->
+                            </label>
+                            <div class="btn-group" role="group">
+                                <!--<div class="checkbox-custom">-->
+                                    <!--<input class="check" type="checkbox" value="option" id="checkbox12">-->
+                                    <!--<label for="checkbox12"></label>-->
+                                <!--</div>-->
+                                <!--<a href="#" class="btn btn-default btn-link btn-sm" data-toggle="modal" data-target="#edit-image">-->
+                                    <!--<i class="fa fa-pencil mr5"></i>Edit-->
+                                <!--</a>-->
+                                <a href="#" id="delete-${image?.id}" class="btn btn-default btn-link btn-sm delete-image"><i class="fa fa-trash-o mr5"></i>Удалить</a>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <a href="../${ image.url }" data-toggle="lightbox" data-gallery="multiimages" data-title="${image.name}" data-parent>
+                                <img class="img-responsive" src="../${ image.url }" alt="image alt">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                #{/list}
+            </div>
+
+
+            <!--<form action="@{Manager.uploadImage()}" method="POST" enctype="multipart/form-data">-->
+                <!--<input type="hidden" name="fieldId" value="1" />-->
+                <!--<input type="text" name="title" />-->
+                <!--<input type="file" name="file" />-->
+                <!--<input type="submit" value="submit" />-->
+            <!--</form>-->
 
             <form class="form-horizontal group-border" method="post" action="@{Manager.save()}">
                 <div class="form-group">
@@ -189,12 +365,6 @@
                                 <input name="field.width" id="" class="basic-spinner form-control" type="text" value="55">
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-lg-2 col-md-3 control-label">Дополнительная информация</label>
-                    <div class="col-lg-4 col-md-3">
-                        <textarea name="field.info" type="text" class="form-control"></textarea>
                     </div>
                 </div>
                 <div class="form-group">

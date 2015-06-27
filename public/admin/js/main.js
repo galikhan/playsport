@@ -193,4 +193,110 @@ $(document).ready(function() {
             adminObj.removeFixedSidebar('right');
         }
     });
+
+    //    CUSTOM FUNCTIONS PLAYSPORT
+    var removeUrl = "@{Manager.deleteImage()}";
+
+    //lightbox enable on click image
+    $('*[data-toggle="lightbox"]').click(function(event) {
+        event.preventDefault();
+        $(this).ekkoLightbox();
+    });
+
+    //timepicker
+    $('.timepicker').timepicker({
+    	upArrowStyle: 'fa fa-angle-up',
+    	downArrowStyle: 'fa fa-angle-down',
+    	minuteStep: 30,
+    	showMeridian:false
+    });
+
+    ymaps.ready(init);
+    var myMap;
+    var initCoords;
+    function init(){
+        myMap = new ymaps.Map("map", {
+            //Astana coords
+            center: [51.1284,71.4306],
+            zoom: 12
+        });
+
+        //var placemark = new ymaps.Placemark(myMap.getCenter(),{},{preset:"islands#redDotIcon"});
+        //myMap.geoObjects.add(placemark);
+
+        var placemarkSet = false;
+        myMap.events.add('click', function(e){
+            if(!placemarkSet){
+                var clickedCoords = e.get("coords");
+                document.getElementById("map-coordinates").value = clickedCoords[0]+","+clickedCoords[1];
+
+                var placemark = new ymaps.Placemark(
+                    clickedCoords,{},
+                    {
+                        preset:"islands#redDotIcon",
+                        draggable:true,
+                    }
+                );
+                placemark.events.add('dragend', function(event)
+                {
+                        var markerPosition = event.get("position");
+                        // Переводим координаты страницы в глобальные пиксельные координаты.
+                        var markerGlobalPosition = myMap.converter.pageToGlobal(markerPosition),
+                            // Получаем центр карты в глобальных пиксельных координатах.
+                            mapGlobalPixelCenter = myMap.getGlobalPixelCenter(),
+                            // Получением размер контейнера карты на странице.
+                            mapContainerSize = myMap.container.getSize(),
+                            mapContainerHalfSize = [mapContainerSize[0] / 2, mapContainerSize[1] / 2],
+                            // Вычисляем границы карты в глобальных пиксельных координатах.
+                            mapGlobalPixelBounds = [
+                                [mapGlobalPixelCenter[0] - mapContainerHalfSize[0], mapGlobalPixelCenter[1] - mapContainerHalfSize[1]],
+                                [mapGlobalPixelCenter[0] + mapContainerHalfSize[0], mapGlobalPixelCenter[1] + mapContainerHalfSize[1]]
+                            ];
+
+                            var geoPosition = myMap.options.get('projection').fromGlobalPixels(markerGlobalPosition, myMap.getZoom());
+                            document.getElementById("map-coordinates").value = geoPosition[0]+","+geoPosition[1];
+
+
+                        // Проверяем, что завершение работы драггера произошло в видимой области карты.
+//                        if (containsPoint(mapGlobalPixelBounds, markerGlobalPosition)) {
+                            // Теперь переводим глобальные пиксельные координаты в геокоординаты с учетом текущего уровня масштабирования карты.
+//                            var geoPosition = myMap.options.get('projection').fromGlobalPixels(markerGlobalPosition, myMap.getZoom());
+//                            console.log('geopost', geoPosition);
+//                        }
+                        //console.log('global', markerGlobalPosition)
+                });
+
+                myMap.geoObjects.add(placemark);
+                placemarkSet = true;
+            }
+        });
+        console.log(myMap.geoObjects);
+
+        showCityList();
+
+        function drag(){
+            console.log('drag');
+        }
+
+        function beforedrag(){
+            console.log('before');
+        }
+    }
+    function showCityList(){
+        console.log("shoooow");
+        $("#field-city-id").show();
+    }
+
+    function setCenter(){
+        var city = document.getElementById("field-city-id").value;
+        var code = document.getElementById("city-code-"+city).value;
+        var array = code.split(",");
+        var coord = [];
+        coord.push(array[0]);
+        coord.push(array[1]);
+        console.log(coord);
+        myMap.setCenter(coord);
+    }
+
+
 });

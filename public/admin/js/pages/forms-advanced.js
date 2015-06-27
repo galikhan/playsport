@@ -94,83 +94,83 @@ $(document).ready(function() {
     });
 
     //------------- Datepicker -------------//
-    $("#basic-datepicker").datepicker();
+//    $("#basic-datepicker").datepicker();
     //multiple date
-    $("#multiple-datepicker").datepicker({
-    	multidate: true
-    });
+//    $("#multiple-datepicker").datepicker({
+//    	multidate: true
+//    });
     //date range
-    $(".input-daterange").datepicker();
+//    $(".input-daterange").datepicker();
     //inline
-    $("#inline-datepicker").datepicker();
+//    $("#inline-datepicker").datepicker();
 
-    //------------- Timepicker -------------//
-    $('#default-timepicker').timepicker({
-    	upArrowStyle: 'fa fa-angle-up',
-    	downArrowStyle: 'fa fa-angle-down',
-    });
-    //custom time
-    $('#customtime-timepicker').timepicker({
-    	upArrowStyle: 'fa fa-angle-up',
-    	downArrowStyle: 'fa fa-angle-down',
-    	defaultTime: '22:45 AM'
-    });
-    //custom minute step
-    $('#minute-step-timepicker').timepicker({
-    	upArrowStyle: 'fa fa-angle-up',
-    	downArrowStyle: 'fa fa-angle-down',
-    	minuteStep: 30
-    });
-    //show seconds
-    $('#show-seconds-timepicker').timepicker({
-    	upArrowStyle: 'fa fa-angle-up',
-    	downArrowStyle: 'fa fa-angle-down',
-    	showSeconds: true
-    });
-
+//    //------------- Timepicker -------------//
+//    $('#default-timepicker').timepicker({
+//    	upArrowStyle: 'fa fa-angle-up',
+//    	downArrowStyle: 'fa fa-angle-down',
+//    });
+//    //custom time
+//    $('#customtime-timepicker').timepicker({
+//    	upArrowStyle: 'fa fa-angle-up',
+//    	downArrowStyle: 'fa fa-angle-down',
+//    	defaultTime: '22:45 AM'
+//    });
+//    //custom minute step
+//    $('#minute-step-timepicker').timepicker({
+//    	upArrowStyle: 'fa fa-angle-up',
+//    	downArrowStyle: 'fa fa-angle-down',
+//    	minuteStep: 30
+//    });
+//    //show seconds
+//    $('#show-seconds-timepicker').timepicker({
+//    	upArrowStyle: 'fa fa-angle-up',
+//    	downArrowStyle: 'fa fa-angle-down',
+//    	showSeconds: true
+//    });
+//
     //------------- Colorpicker -------------//
-    $('#default-colorpicker').colorpicker();
-    //as component
-    $('#component-colorpicker').colorpicker({
-    	color: '#1fba5d'
-    });
+//    $('#default-colorpicker').colorpicker();
+//    //as component
+//    $('#component-colorpicker').colorpicker({
+//    	color: '#1fba5d'
+//    });
     //horizontal
-    $('#horizontal-colorpicker').colorpicker({
-    	horizontal: true
-    });
-    //inline
-     $('#inline-colorpicker').colorpicker({
-    	inline: true,
-    	container: '.inline-picker'
-    });
+//    $('#horizontal-colorpicker').colorpicker({
+//    	horizontal: true
+//    });
+//    //inline
+//     $('#inline-colorpicker').colorpicker({
+//    	inline: true,
+//    	container: '.inline-picker'
+//    });
 
     //------------- Tags -------------//
     //from json
-    var citynames = new Bloodhound({
-	  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-	  queryTokenizer: Bloodhound.tokenizers.whitespace,
-	  prefetch: {
-	    url: 'ajax/citynames.json',
-	    filter: function(list) {
-	      return $.map(list, function(cityname) {
-	        return { name: cityname }; });
-	    }
-	  }
-	});
-	citynames.initialize();
+//    var citynames = new Bloodhound({
+//	  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+//	  queryTokenizer: Bloodhound.tokenizers.whitespace,
+//	  prefetch: {
+//	    url: 'ajax/citynames.json',
+//	    filter: function(list) {
+//	      return $.map(list, function(cityname) {
+//	        return { name: cityname }; });
+//	    }
+//	  }
+//	});
+//	citynames.initialize();
 
-	$('#json-tags').tagsinput({
-		typeaheadjs: {
-			name: 'citynames',
-			displayKey: 'name',
-			valueKey: 'name',
-			source: citynames.ttAdapter()
-		}
-	});
-
-    //------------- WYSIWYG summernote -------------//
-    $('#summernote').summernote({
-        height: 200
-    });
+//	$('#json-tags').tagsinput({
+//		typeaheadjs: {
+//			name: 'citynames',
+//			displayKey: 'name',
+//			valueKey: 'name',
+//			source: citynames.ttAdapter()
+//		}
+//	});
+//
+//    //------------- WYSIWYG summernote -------------//
+//    $('#summernote').summernote({
+//        height: 200
+//    });
 
 });

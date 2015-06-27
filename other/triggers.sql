@@ -42,4 +42,8 @@ CREATE TRIGGER ps_users BEFORE INSERT OR UPDATE ON ps_users
 CREATE TRIGGER ps_field_comforts BEFORE INSERT OR UPDATE ON ps_field_comforts
     FOR EACH ROW EXECUTE PROCEDURE generic_stamp();
 
+--8
+CREATE TRIGGER ps_schedule BEFORE INSERT OR UPDATE ON ps_schedule
+    FOR EACH ROW EXECUTE PROCEDURE generic_stamp();
+
 
